@@ -49,6 +49,20 @@ try {
 			{PagefileUsage: ctypes.uintptr_t},
 			{PeakPagefileUsage: ctypes.uintptr_t}
 		]);
+	const PROCESS_MEMORY_COUNTERS_EX = new ctypes.StructType('PROCESS_MEMORY_COUNTERS_EX',
+		[
+			{cb: ctypes.uint32_t},
+			{PageFaultCount: ctypes.uint32_t},
+			{PeakWorkingSetSize: ctypes.uintptr_t},
+			{WorkingSetSize: ctypes.uintptr_t},
+			{QuotaPeakPagedPoolUsage: ctypes.uintptr_t},
+			{QuotaPagePoolUsage: ctypes.uintptr_t},
+			{QuotaPeakNonPagedPoolUsage: ctypes.uintptr_t},
+			{QuotaNonPagedPoolUsage: ctypes.uintptr_t},
+			{PagefileUsage: ctypes.uintptr_t},
+			{PeakPagefileUsage: ctypes.uintptr_t},
+			{PrivateUsage: ctypes.uintptr_t}
+		]);
 	// system info
 	const SYSTEM_INFO = new ctypes.StructType('SYSTEM_INFO',
 		[
@@ -179,6 +193,13 @@ try {
 			PROCESS_MEMORY_COUNTERS.ptr,
 			ctypes.uint32_t);
 
+	var fnGetProcessMemoryInfoEx = psapi.declare('GetProcessMemoryInfo',
+			WinABI,
+			ctypes.uint32_t,
+			ctypes.voidptr_t,
+			PROCESS_MEMORY_COUNTERS_EX.ptr,
+			ctypes.uint32_t);
+
 	// GetIfTable
 	var fnGetIfTable = iphlpapi.declare('GetIfTable',
 			WinABI,
@@ -203,12 +224,12 @@ try {
 		}
 	}
 
-	var pmc = PROCESS_MEMORY_COUNTERS();
+	var pmc = PROCESS_MEMORY_COUNTERS_EX();
 	this.GetFxMemory = function(usage, vm_size) {
 		try {
-			pmc.cb = PROCESS_MEMORY_COUNTERS.size;
-			fnGetProcessMemoryInfo(currentProcess, pmc.address(), PROCESS_MEMORY_COUNTERS.size);
-			usage.value = Math.floor(pmc.WorkingSetSize / (1024 * 1024));
+			pmc.cb = PROCESS_MEMORY_COUNTERS_EX.size;
+			fnGetProcessMemoryInfoEx(currentProcess, pmc.address(), PROCESS_MEMORY_COUNTERS_EX.size);
+			usage.value = Math.floor(pmc.PrivateUsage / (1024 * 1024));
 			vm_size.value = Math.floor(pmc.PagefileUsage / (1024 * 1024));
 		} catch (e) {
 			logger.logStringMessage('-----------' + e + '----------');
