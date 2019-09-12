@@ -23,6 +23,10 @@
 	var tm = Cc['@mozilla.org/timer;1'].createInstance(Ci.nsITimer);
 	var sm = Cc["@enjoyfreeware.org/statusbarex;1"].createInstance(Ci.IStatusbarExCore);
 
+	/** hack **/
+	var gMgr = Cc["@mozilla.org/memory-reporter-manager;1"].getService(Ci.nsIMemoryReporterManager);
+	/** hack **/
+
 	var config = {
 		memory: true,
 		cpuSys: true,
@@ -150,7 +154,8 @@
 		memCache.free = freeMemory.value;
 		memCache.fx = fxMemory.value;
 
-		var ratio = ((fxMemory.value / totalMemory.value) * 100) + .5 ;
+		// var ratio = ((fxMemory.value / totalMemory.value) * 100) + .5 ;
+		var ratio = ((fxMemory.value / (fxMemory.value+freeMemory.value)) * 100) + .5 ;
 		ratio = Math.floor(ratio);
 		var tooltip = getString('memoryuse') + " (Pale Moon): %fx% MB %ratio%% | " + getString('freememory') + ": %fm% MB ";
 		tooltip = tooltip.replace(/%fm%/, freeMemory.value).replace(/%fx%/, fxMemory.value).replace(/%ratio%/, ratio);
@@ -160,6 +165,10 @@
 		var value = "%fx% MB | %fm% MB";
 		value = value.replace(/%fm%/, freeMemory.value).replace(/%fx%/, fxMemory.value);
 		memElems.value.setAttribute('value', value);
+
+		if(ratio < 33) memElems.used.className = "usedlow";
+		else if(ratio < 66) memElems.used.className = "usedmid";
+		else memElems.used.className = "usedhigh";
 
 		if (ratio != memCache.ratio) {
 			w = memElems.all.clientWidth;
@@ -441,6 +450,26 @@
 
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
+	/** copied from about:memory **/
+
+	function doGC() {
+		Services.obs.notifyObservers(null, "child-gc-request", null);
+		Cu.forceGC();
+	}
+
+	function doCC() {
+		Services.obs.notifyObservers(null, "child-cc-request", null);
+		window.QueryInterface(Ci.nsIInterfaceRequestor)
+			.getInterface(Ci.nsIDOMWindowUtils)
+			.cycleCollect();
+	}
+
+	function doMMU() {
+		Services.obs.notifyObservers(null, "child-mmu-request", null);
+		gMgr.minimizeMemoryUsage( ()=>{} );
+	}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
 	/** popup related **/
 	function showSbexMenu(evt) {
 		if (evt.button != 0) {
@@ -462,6 +491,14 @@
 			[ 'cpuSys', 'CPU' ],
 			[ 'cpuFx', 'CPU (Pale Moon)' ]
 		];
+
+		/* hack */
+			var item = document.createElement('menuitem');
+			menu.appendChild(item);
+			item.setAttribute('label', "minimize memory");
+			item.name = "minmem";
+			item.onclick = onSbexMenuSelected;
+		/* hack */
 
 		for (var i = 0, l = options.length; i < l; ++ i) {
 			var opt = options[i];
@@ -494,6 +531,13 @@
 			key = 'extensions.sbex.' + name;
 			sbprefs.setBoolPref(key, value);
 		}
+		/* hack */
+		if(name == "minmem") {
+			doGC();
+			doCC();
+			doMMU();
+		}
+		/* hack */
 	}
 
 	function showNetworkMenu(evt) {

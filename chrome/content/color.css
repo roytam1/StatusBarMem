@@ -22,10 +22,24 @@
 	border: 1px solid #aaa;
 }
 
-#sbex-memory-used {
+.usedlow {
 	/* background: -moz-linear-gradient(#0f0, #0a0); */
 	/* background: -moz-linear-gradient(#d54a0b, #840); */
 	background: -moz-linear-gradient(#2b2, #050);
+	/* background: -moz-linear-gradient(green, #2c2, green 80%); */
+}
+
+.usedmid {
+	/* background: -moz-linear-gradient(#0f0, #0a0); */
+	/* background: -moz-linear-gradient(#d54a0b, #840); */
+	background: -moz-linear-gradient(#bb2, #550);
+	/* background: -moz-linear-gradient(green, #2c2, green 80%); */
+}
+
+.usedhigh {
+	/* background: -moz-linear-gradient(#0f0, #0a0); */
+	/* background: -moz-linear-gradient(#d54a0b, #840); */
+	background: -moz-linear-gradient(#b22, #500);
 	/* background: -moz-linear-gradient(green, #2c2, green 80%); */
 }
 
