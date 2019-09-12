@@ -1,3 +1,15 @@
+/*
+ * This is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 3 as
+ * published by the Free Software Foundation.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * If you have not received a copy of the GNU General Public License, see <http://www.gnu.org/licenses/>.
+ */
 
 (function() {
 	const Cc = Components.classes;
@@ -15,7 +27,7 @@
 		memory: true,
 		cpuSys: true,
 		cpuFx: true,
-		network: true,
+		network: false,
 		netIndex: 0,
 
 		detailsOpen: false,
@@ -37,7 +49,7 @@
 	function init() {
 		window.removeEventListener('load', arguments.callee, false);
 
-		document.getElementById('sbex').setAttribute('tooltiptext', getString('sbexTooltip'));
+		document.getElementById('sbex').setAttribute('tooltiptext', getString('memoryuse'));
 
 		// save mem elements
 		var map = {
@@ -86,7 +98,7 @@
 		}
 
 		// install the event handlers
-		document.getElementById('sbex-network-selector').onclick = showNetworkMenu;
+//		document.getElementById('sbex-network-selector').onclick = showNetworkMenu;
 		var ids = ['sbex-logo', 'sbex-memory', 'sbex-cpu'];//, 'sbex-network-value'];
 		for (var i = 0, l = ids.length; i < l; ++ i) {
 			var elem = document.getElementById(ids[i]);
@@ -114,7 +126,7 @@
 		} catch (e) {
 			if (!updateExceptionLogged) { // log only once
 				logger.logStringMessage('statusbarex exception: ' + e);
-				updateExceptionLogged = true;
+				updateExceptionLogged = false;
 			}
 			return;
 		}
@@ -124,9 +136,9 @@
 	/* memory */
 	var memCache = {free: -1, fx: -1, ratio: -1};
 	function updateMemory() {
-		if (!config.memory) {
-			return;
-		}
+	//	if (!config.memory) {
+	//		return;
+	//	}
 
 		var freeMemory = {value: 0}, totalMemory = {value: 0};
 		var fxMemory = {value: 0}, fxVm = {value: 0};
@@ -138,14 +150,14 @@
 		memCache.free = freeMemory.value;
 		memCache.fx = fxMemory.value;
 
-		var ratio = 1 - freeMemory.value / totalMemory.value;
-		ratio = Math.floor(ratio * 100 + 0.5);
-
-		var tooltip = getString('sbexMemoryTooltipTemplate');
+		var ratio = ((fxMemory.value / totalMemory.value) * 100) + .5 ;
+		ratio = Math.floor(ratio);
+		var tooltip = getString('memoryuse') + " (Pale Moon): %fx% MB %ratio%% | " + getString('freememory') + ": %fm% MB ";
 		tooltip = tooltip.replace(/%fm%/, freeMemory.value).replace(/%fx%/, fxMemory.value).replace(/%ratio%/, ratio);
-		memElems.container.setAttribute('tooltiptext', tooltip);
+		if (config.memory) memElems.container.setAttribute('tooltiptext', tooltip);
+		document.getElementById('sbex').setAttribute('tooltiptext', tooltip);
 
-		var value = getString('sbexMemoryTemplate');
+		var value = "%fx% MB | %fm% MB";
 		value = value.replace(/%fm%/, freeMemory.value).replace(/%fx%/, fxMemory.value);
 		memElems.value.setAttribute('value', value);
 
@@ -171,9 +183,7 @@
 				cpuElems.sysUsed.style.height = cpu.value * h / 100 + 'px';
 				cpuElems.sysValue.setAttribute('value', cpu.value + '%');
 
-				var tooltip = getString('sbexCpuTooltipSys');
-				tooltip = tooltip.replace(/%value%/, cpu.value);
-				cpuElems.sys.setAttribute('tooltiptext', tooltip);
+				cpuElems.sys.setAttribute('tooltiptext', "CPU");
 			}
 		}
 
@@ -186,8 +196,7 @@
 				cpuElems.fxUsed.style.height = cpu.value * h / 100 + 'px';
 				cpuElems.fxValue.setAttribute('value', cpu.value + '%');
 	
-				var tooltip = getString('sbexCpuTooltipFx');
-				tooltip = tooltip.replace(/%value%/, cpu.value);
+				var tooltip = "CPU (Pale Moon)";
 				cpuElems.fx.setAttribute('tooltiptext', tooltip);
 			}
 		}
@@ -230,7 +239,7 @@
 		sm.GetEthernetSpeed(netIndex, inSpeed, outSpeed);
 
 		if (config.network) {
-			var value = getString('sbexNetworkTemplate');
+			var value = "";	
 			value = value.replace(/%down%/, formatSpeed(inSpeed.value)).replace(/%up%/, formatSpeed(outSpeed.value));
 			netElems.value.setAttribute('value', value);
 		}
@@ -448,14 +457,10 @@
 		}
 
 		var options = [ // config-key, string-key
-			[ 'memory', 'sbexMemory' ],
+			[ 'memory', 'memoryuse' ],
 			[ 'separator' ],
-			[ 'cpuSys', 'sbexCpuSys' ],
-			[ 'cpuFx', 'sbexCpuFx' ],
-			[ 'separator' ],
-			[ 'network', 'sbexNetwork' ],
-			[ 'separator' ],
-			[ 'textonly', 'sbexTextOnly' ]
+			[ 'cpuSys', 'CPU' ],
+			[ 'cpuFx', 'CPU (Pale Moon)' ]
 		];
 
 		for (var i = 0, l = options.length; i < l; ++ i) {

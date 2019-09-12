@@ -1,25 +1,44 @@
 content     statusbarex    chrome/content/
-
-# overlay chrome://browser/content/browser.xul chrome://statusbarex/content/mainui.xul
 overlay chrome://browser/content/browser.xul chrome://statusbarex/content/main.xul
 
+locale	statusbarex	bg		chrome/locale/bg/
+locale	statusbarex	cs		chrome/locale/cs/
+locale	statusbarex	da		chrome/locale/da/
+locale	statusbarex	de		chrome/locale/de/
+locale	statusbarex	el		chrome/locale/el/
+locale	statusbarex	en-US	chrome/locale/en-US/
+locale	statusbarex	es-ES	chrome/locale/es-ES/
+locale	statusbarex	fi		chrome/locale/fi/
+locale	statusbarex	fr		chrome/locale/fr/
+locale	statusbarex	hr		chrome/locale/hr/
+locale	statusbarex	hu		chrome/locale/hu/
+locale	statusbarex	id		chrome/locale/id/
+locale	statusbarex	is		chrome/locale/is/
+locale	statusbarex	it		chrome/locale/it/
+locale	statusbarex	ja		chrome/locale/ja/
+locale	statusbarex	ko		chrome/locale/ko/
+locale	statusbarex	nb-NO	chrome/locale/nb-NO/
+locale	statusbarex	nl		chrome/locale/nl/
+locale	statusbarex	nn-NO	chrome/locale/nn-NO/
+locale	statusbarex	pl		chrome/locale/pl/
+locale	statusbarex	pt-BR	chrome/locale/pt-BR/
+locale	statusbarex	pt-PT	chrome/locale/pt-PT/
+locale	statusbarex	ro		chrome/locale/ro/
+locale	statusbarex	ru		chrome/locale/ru/
+locale	statusbarex	sk		chrome/locale/sk/
+locale	statusbarex	sl		chrome/locale/sl/
+locale	statusbarex	sr		chrome/locale/sr/
+locale	statusbarex	sv-SE	chrome/locale/sv-SE/
+locale	statusbarex	tl		chrome/locale/tl/
+locale	statusbarex	tr		chrome/locale/tr/
+locale	statusbarex	uk		chrome/locale/uk/
+locale	statusbarex	vi		chrome/locale/vi/
+locale	statusbarex	zh-CN	chrome/locale/zh-CN/
+locale	statusbarex	zh-TW	chrome/locale/zh-TW/
 
-#######################################################
+
 # components
 interfaces components/IStatusbarExCore.xpt
 # binary-component components/statusbarex.dll ABI=WINNT_x86-msvc
-
 component {9A15453F-2D14-42E5-91EA-09A32E88FF39} components/statusbarex.js
 contract @enjoyfreeware.org/statusbarex;1 {9A15453F-2D14-42E5-91EA-09A32E88FF39}
-
-
-#######################################################
-# Locale support
-# Thanks to Jean-bernard(aka Goofy) for helping to add this!!
-#
-# default locale
-locale	statusbarex	en-US	chrome/locale/en-US/
-
-# simplified Chinese
-locale	statusbarex	zh-CN	chrome/locale/zh-CN/
-
