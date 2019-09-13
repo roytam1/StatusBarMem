@@ -202,7 +202,8 @@
 			if (cpu.value != cpuCache.fx) {
 				cpuCache.fx = cpu.value;
 				var h = cpuElems.fxImage.clientHeight;
-				cpuElems.fxUsed.style.height = cpu.value * h / 100 + 'px';
+				var cpuh = cpu.value > 100 ? 100 : cpu.value;
+				cpuElems.fxUsed.style.height = cpuh * h / 100 + 'px';
 				cpuElems.fxValue.setAttribute('value', cpu.value + '%');
 	
 				var tooltip = "CPU (Pale Moon)";

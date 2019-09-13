@@ -258,11 +258,11 @@ try {
 					getValueFromFileTime(fxUtNow) - getValueFromFileTime(fxUt);
 				fxCpuUsage /= 100;
 				fxCpuUsage /= (ts - fxTs);
-				fxCpuUsage = Math.floor(fxCpuUsage / cpuCount);
+				fxCpuUsage = Math.floor(fxCpuUsage);
 
-				if (fxCpuUsage > 100) {
+				/*if (fxCpuUsage > 100) {
 					fxCpuUsage = 100;
-				}
+				}*/
 	
 				fxTs = ts;
 				fxKt.dwLowDateTime = fxKtNow.dwLowDateTime;
