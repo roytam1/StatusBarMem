@@ -218,7 +218,7 @@ try {
 			msex.dwLength = MEMORYSTATUSEX.size;
 			fnGlobalMemoryStatusEx(msex.address());
 			total_memory.value = Math.floor(msex.ullTotalPhys / (1024 * 1024));
-			free_memory.value = Math.floor(msex.ullAvailPhys / (1024 * 1024));
+			free_memory.value = Math.floor(Math.min(msex.ullAvailPhys, msex.ullAvailVirtual) / (1024 * 1024));
 		} catch (e) {
 			logger.logStringMessage('++++++++++' + e + '++++++++++');
 		}
